@@ -1,9 +1,4 @@
- /*
-serial config:
-Board: Arduiono Pro / Pro Mini
-Port:  tty.usbseriala400eMNr
-Programmer: USBtinyISP
-*/
+
 
 // Definitionen
 #include <Arduino.h>
@@ -49,9 +44,9 @@ boolean playmode = false, Step = false;
 
 void readPot() // read analog inputs and add some offsets (mechanical corrections)
 {
-   SensVal[0] = analogRead(sensorPin0); SensVal[0] += -10; // rotate
-   SensVal[1] = analogRead(sensorPin1); SensVal[1] += 280; // Shoulder
-   SensVal[2] = analogRead(sensorPin2); SensVal[2] += -50; // hand
+   SensVal[0] = analogRead(sensorPin0); //SensVal[0] += -10; // rotate
+   SensVal[1] = analogRead(sensorPin1); //SensVal[1] += 280; // Shoulder
+   SensVal[2] = analogRead(sensorPin2); //SensVal[2] += -50; // hand
    SensVal[3] = analogRead(sensorPin3); // SensVal[3] += 0;// gripper
    //Serial.print(SensVal[2]);Serial.print(" "); // CHECK
 }
@@ -73,10 +68,10 @@ void calc_pause() // read pot and map to usable delay time after a complete move
 
 void mapping() // we need microsecond for the servos instead potentiometer values
 {
-  ist[0] = map(SensVal[0], 150, 900, 600, 2400);//  drehen
-  ist[1] = map(SensVal[1], 1000, 100, 550, 2400);// Schulter
-  ist[2] = map(SensVal[2], 120, 860, 400, 2500);// Hand
-  ist[3] = map(SensVal[3], 1023, 0, 500, 2500);// Zange
+  ist[0] = map(SensVal[0], 0, 860, 0, 180);//  drehen
+  ist[1] = map(SensVal[1], 1023, 69, 550, 2400);// Schulter
+  ist[2] = map(SensVal[2], 0, 800, 400, 2500);// Hand
+  ist[3] = map(SensVal[3], 1023, 210, 0, 180);// Zange
   //Serial.println(ist[2]); // CHECK
 }
 void record()
@@ -95,10 +90,11 @@ void Read()
 }
 void move_servo()
 {       
-  servo_0.writeMicroseconds(ist[3]); // send milissecond values to servos
-  servo_1.writeMicroseconds(ist[2]); 
-  servo_2.writeMicroseconds(ist[0]); 
-  servo_3.writeMicroseconds(ist[1]); 
+  servo_0.write(ist[3]); // send milissecond values to servos
+  servo_1.write(ist[2]); 
+  servo_2.write(ist[0]); 
+  servo_3.write(ist[1]); 
+  
 }
 
 // ------------------------------------------------------------ single steps calculating
@@ -271,8 +267,8 @@ void setup()
   pinMode(6, INPUT);
   pinMode(13, OUTPUT);  // sets the digital pin 13 as outtput
   digitalWrite(13, HIGH);   // sets the LED on
-  servo_0.attach(3); // attaches the servo
-  servo_1.attach(5);
+  servo_0.attach(8); // attaches the servo
+  servo_1.attach(9);
   servo_2.attach(10);
   servo_3.attach(11);
   Serial.begin(115200); // Baudrate have to be same on the IDE
@@ -370,4 +366,3 @@ void loop() // here we go!
 }
 
 // ---------------------------------------------------------------------------------------- sub routinen
-
